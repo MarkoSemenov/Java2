@@ -2,21 +2,20 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ServerForMessenger {
+public class Server {
 
-    private int SERVER_PORT = 2021;
+    private int SERVER_PORT;
     private boolean isConnect = true;
-    private Scanner scanner = new Scanner(System.in);
-    private LinkedList<Server> allUsers = new LinkedList<>();
-    private Thread tread = new Thread();
+    private final Scanner scanner = new Scanner(System.in);
+    private LinkedList<Connection> allUsers = new LinkedList<>();
 
-    public ServerForMessenger() {
-//        this.SERVER_PORT = SERVER_PORT;
+    public Server(int SERVER_PORT) {
+        this.SERVER_PORT = SERVER_PORT;
 
     }
 
     public void startServer() {
-        System.out.println(Thread.currentThread().getName());
+
         try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
 
             Thread sendMsgTo = new Thread(this::sendMsgToUsers);
@@ -25,8 +24,9 @@ public class ServerForMessenger {
             while (isConnect) {
                 try {
                     Socket socket = serverSocket.accept();
-                    allUsers.add(new Server(socket));
-
+                    addUsers(socket);
+                    Thread t = new Thread(this::removeUsers);
+                    t.start();
                 } catch (IOException e) {
                     e.printStackTrace();
                     isConnect = false;
@@ -38,10 +38,19 @@ public class ServerForMessenger {
         }
     }
 
+    public synchronized void addUsers(Socket socket) throws IOException {
+        allUsers.add(new Connection(socket));
+    }
+
+    public synchronized void removeUsers() {
+        allUsers.removeIf(s -> !s.isConnectSocket());
+
+    }
+
     private void sendMsgToUsers() {
         while (isConnect) {
             String msgToUsers = scanner.nextLine();
-            for (Server s : allUsers) {
+            for (Connection s : allUsers) {
                 try {
                     s.sendMsg(s.getOutputStream(), msgToUsers);
                 } catch (IOException e) {
@@ -53,25 +62,25 @@ public class ServerForMessenger {
     }
 
 
-    public LinkedList<Server> getAllUsers() {
+    public LinkedList<Connection> getAllUsers() {
         return allUsers;
     }
 
-    public void setAllUsers(LinkedList<Server> allUsers) {
+    public void setAllUsers(LinkedList<Connection> allUsers) {
         this.allUsers = allUsers;
     }
 
 }
 
 
-class Server extends Thread {
+class Connection extends Thread {
 
     private Socket socket;
-    private boolean isConnect = true;
+    private boolean isConnectSocket = true;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
 
-    public Server(Socket socket) throws IOException {
+    public Connection(Socket socket) throws IOException {
         this.socket = socket;
         inputStream = new DataInputStream(socket.getInputStream());
         outputStream = new DataOutputStream(socket.getOutputStream());
@@ -81,14 +90,16 @@ class Server extends Thread {
 
     public void run() {
 
-        while (isConnect) {
+        while (isConnectSocket) {
             try {
                 getMsg(inputStream);
             } catch (IOException e) {
                 System.out.println("Клиент разорвал соединение");
-                isConnect = false;
+                currentThread().interrupt();
+                isConnectSocket = false;
                 return;
             }
+
         }
 
     }
@@ -101,9 +112,9 @@ class Server extends Thread {
     }
 
     public void sendMsg(DataOutputStream outputStream, String msgToUsers) throws IOException {
-
-        outputStream.writeUTF(msgToUsers + "\n");
-
+        if (isConnectSocket) {
+            outputStream.writeUTF(msgToUsers + "\n");
+        }
     }
 
 
@@ -115,14 +126,21 @@ class Server extends Thread {
         this.outputStream = outputStream;
     }
 
+    public boolean isConnectSocket() {
+        return isConnectSocket;
+    }
+
+    public void setConnectSocket(boolean connectSocket) {
+        isConnectSocket = connectSocket;
+    }
 }
 
 
 class ServerApp {
 
     public static void main(String[] args) {
-        ServerForMessenger serverForMessenger = new ServerForMessenger();
-        serverForMessenger.startServer();
+        Server server = new Server(2021);
+        server.startServer();
     }
 
 }

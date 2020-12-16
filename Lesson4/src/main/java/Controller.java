@@ -20,6 +20,7 @@ public class Controller {
     @FXML
     public static Text userTextField;
     private boolean isConnect = true;
+
     private final ClientSocket clientSocket = new ClientSocket();
 
     public void clickOnSendButton(ActionEvent actionEvent) {
@@ -30,7 +31,7 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }, "Поток в котором клиент отправляет сообщение");
         t.start();
 
     }
@@ -69,19 +70,20 @@ public class Controller {
 
 
         public ClientSocket() {
-
             try {
+                socket = new Socket("localhost", 2021);
                 connectServer();
             } catch (IOException e) {
                 System.out.println("Сервер не доступен");
                 e.printStackTrace();
             }
-
         }
 
         public void connectServer() throws IOException {
-            socket = new Socket("localhost", 2021);
-            System.out.println(socket.isConnected());
+
+            inputMessage = new DataInputStream(socket.getInputStream());
+
+            System.out.println("Соединение установлено: " + socket.isConnected());
             Thread readThread = new Thread(() -> {
                 while (true) {
                     try {
@@ -97,9 +99,10 @@ public class Controller {
         }
 
         public void getMessageFromServer() throws IOException {
-            inputMessage = new DataInputStream(socket.getInputStream());
-            String getMsg = inputMessage.readUTF();
-            chatTextArea.appendText("Сервер: " + getMsg);
+
+                String getMsg = inputMessage.readUTF();
+                chatTextArea.appendText("Сервер: " + getMsg);
+
         }
 
         public void sendMessageToServer() throws IOException {
@@ -107,7 +110,6 @@ public class Controller {
                 outputMessage = new DataOutputStream(socket.getOutputStream());
                 String msgFromServer = sendTextField.getText();
                 outputMessage.writeUTF(msgFromServer);
-                outputMessage.flush();
             }
             chatTextArea.appendText(sendTextField.getText() + "\n");
             sendTextField.clear();

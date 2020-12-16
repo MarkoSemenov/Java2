@@ -100,8 +100,8 @@ public class Controller {
 
         public void getMessageFromServer() throws IOException {
 
-                String getMsg = inputMessage.readUTF();
-                chatTextArea.appendText("Сервер: " + getMsg);
+            String getMsg = inputMessage.readUTF();
+            chatTextArea.appendText("Сервер: " + getMsg);
 
         }
 

@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ServerForMessenger {
@@ -10,6 +9,7 @@ public class ServerForMessenger {
     private Scanner scanner = new Scanner(System.in);
     private LinkedList<Server> allUsers = new LinkedList<>();
     private Thread tread = new Thread();
+
     public ServerForMessenger() {
 //        this.SERVER_PORT = SERVER_PORT;
 
@@ -19,17 +19,13 @@ public class ServerForMessenger {
         System.out.println(Thread.currentThread().getName());
         try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
 
-            int i = 0;
-            int g = 0;
             Thread sendMsgTo = new Thread(this::sendMsgToUsers);
             sendMsgTo.start();
+
             while (isConnect) {
                 try {
                     Socket socket = serverSocket.accept();
                     allUsers.add(new Server(socket));
-
-                    System.out.println(g++);
-                    System.out.println(i++);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -118,6 +114,7 @@ class Server extends Thread {
     public void setOutputStream(DataOutputStream outputStream) {
         this.outputStream = outputStream;
     }
+
 }
 
 

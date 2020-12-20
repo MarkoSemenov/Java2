@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller" >
+
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem onAction="#exit" text="Exit" />
+                </Menu>
+            </MenuBar>
+
+            <HBox VBox.vgrow="ALWAYS">
+                <ListView prefWidth="300" fx:id="user" >
+                    <TextFlow >
+                        <Text fx:id="userTextField" text="NickName1"/>
+                    </TextFlow>
+                    <TextFlow >
+                        <Text text="NickName2"/>
+                    </TextFlow>
+                    <TextFlow >
+                        <Text text="NickName3"/>
+                    </TextFlow>
+                </ListView>
+
+                <VBox HBox.hgrow="ALWAYS"  >
+                    <TextArea fx:id="chatTextArea" editable="false" SplitPane.resizableWithParent="false" VBox.vgrow="ALWAYS" wrapText="true" focusTraversable="false"/>
+                    <HBox >
+                        <TextField fx:id="sendTextField" prefHeight="50" onAction="#clickOnSendButton" onKeyTyped="#textTyped" HBox.hgrow="ALWAYS" promptText="Введите сообщение"  />
+                        <Button fx:id="sendButton" alignment="CENTER" prefHeight="50" maxWidth="100" onAction="#clickOnSendButton"  text="Send" />
+                    </HBox>
+                </VBox>
+
+            </HBox>
+
+
+
+</VBox>

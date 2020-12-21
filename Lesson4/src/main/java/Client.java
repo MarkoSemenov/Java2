@@ -1,22 +1,18 @@
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class Client  {
+public class Client {
 
-    public List<String> nickName = new ArrayList<>();
     private DataInputStream inputMessage;
     private DataOutputStream outputMessage;
     private Socket socket;
     private final Controller controller;
     private boolean isConnect = true;
-    public static boolean authorization = false;
+    public volatile static boolean authorization = false;
     public String nick;
 
 
@@ -37,14 +33,6 @@ public class Client  {
 
     }
 
-    public Client getClient() {
-        return this;
-    }
-
-    public String getNick (){
-        return nick;
-    }
-
 
     public void connectServer() throws IOException {
         System.out.println("Соединение установлено: " + socket.isConnected());
@@ -57,6 +45,8 @@ public class Client  {
 
                     getMessage();
 
+
+
                 } catch (IOException e) {
                     System.out.println("Соединение разорвано");
                     isConnect = false;
@@ -65,20 +55,20 @@ public class Client  {
             }
         });
         readThread.start();
+
     }
 
     public synchronized void getMessage() throws IOException {
         String getMsg = inputMessage.readUTF();
-        if (getMsg.startsWith("/clients ")){
-            String [] getNicksFromServer = getMsg.split(" ");
-                controller.list = FXCollections.observableArrayList(getNicksFromServer);
-                controller.list.remove(0);
-                controller.nickNames.setItems(controller.list);
+        if (getMsg.startsWith("/clients ")) {
+            String[] getNicksFromServer = getMsg.split(" ");
+            controller.list = FXCollections.observableArrayList(getNicksFromServer);
+            controller.list.remove(0);
+            controller.nickNames.setItems(controller.list);
         } else {
             controller.chatTextArea.appendText(getMsg);
         }
     }
-
 
 
     public void sendMessage() throws IOException {
@@ -94,17 +84,20 @@ public class Client  {
         while (true) {
             String str = inputMessage.readUTF();
             if (str.startsWith("Success")) {
-                String [] client = str.split(" ");
-                NetChat.userList.add(client[1]);
-                controller.nickNames.setItems(FXCollections.observableArrayList(NetChat.userList));
-                authorization = true;
+                setAuthorization(true);
                 return;
-
             }
         }
     }
 
 
+    public Client getClient() {
+        return this;
+    }
+
+    public String getNick() {
+        return nick;
+    }
 
 
     public Socket getSocket() {

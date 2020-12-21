@@ -1,9 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Server {
@@ -64,12 +62,12 @@ public class Server {
         }
     }
 
-    public synchronized void sendInfoAboutClients () throws IOException {
+    public synchronized void sendInfoAboutClients() throws IOException {
         StringBuilder sb = new StringBuilder("/clients ");
 
         for (Connection c : allConnections) {
             if (!allConnections.isEmpty()) {
-              sb.append(c.gtName() + " ");
+                sb.append(c.gtName() + " ");
             }
         }
         broadcastMsg(sb.toString());

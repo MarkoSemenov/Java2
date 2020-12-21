@@ -5,25 +5,21 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class NetChat extends Application {
 
     public static Stage primaryStage;
-    public static Stage secondStage;
-    public static final List<String> userList = new ArrayList<>();
-
+    long time;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         NetChat.primaryStage = primaryStage;
+        time = System.currentTimeMillis();
 
         authentication();
         showChat();
-
 
     }
 
@@ -63,19 +59,6 @@ public class NetChat extends Application {
         Controller.client.getSocket().close();
     }
 
-
-    public Stage getStage() {
-        return secondStage;
-    }
-
-    public void closeAuth() {
-        secondStage.close();
-    }
-
-    public void startAuth() {
-
-
-    }
 
     public static void main(String[] args) throws IOException {
 

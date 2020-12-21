@@ -1,5 +1,4 @@
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,13 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -49,11 +45,10 @@ public class Controller implements Initializable {
 
     }
 
-
     public void clickOnSendButton(ActionEvent actionEvent) {
         Thread t = new Thread(() -> {
             try {
-               client.sendMessage();
+                client.sendMessage();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -109,8 +104,6 @@ public class Controller implements Initializable {
     public void setConnect(boolean connect) {
         isConnect = connect;
     }
-
-
 
 
     public boolean isAuth() {

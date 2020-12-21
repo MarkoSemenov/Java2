@@ -67,13 +67,13 @@ class Connection extends Thread {
                         if ((client.getLogin().equals(s[1])) && (client.getPassword().equals(s[2]))) {
                             name = client.getNickName();
                             if (!server.isNickBusy(name)) {
-                                sendMsg("Success" + " " + name);
+                                sendMsg("Success");
                                 server.broadcastMsg(name + " зашел в чат...");
                                 server.addUsers(this);
                                 authorization = true;
                                 return;
                             } else {
-                            sendMsg("denied");
+                                sendMsg("denied");
                             }
                         } else outputStream.writeUTF("denied");
                     }
@@ -103,11 +103,6 @@ class Connection extends Thread {
 
     }
 
-
-//    public void getMsg(DataInputStream inputStream) throws IOException {
-//        String messageFromUser = inputStream.readUTF();
-//        System.out.println(currentThread().getName() + ": " + messageFromUser);
-//    }
 
     public void sendMsg(String msgToUsers) throws IOException {
         if (isConnectSocket) {

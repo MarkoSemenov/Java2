@@ -10,9 +10,9 @@
 
     <VBox alignment="CENTER" AnchorPane.topAnchor="200" AnchorPane.leftAnchor="200" >
 
-        <TextField promptText="Введите логин" prefHeight="30" fx:id="login"  />
-        <PasswordField promptText="Введите пароль" prefHeight="30" fx:id="password"/>
-        <Button text="Ok"  prefWidth="200" prefHeight="30" lineSpacing="20" onAction="#entrance" fx:id="enter"/>
+        <TextField promptText="Login" prefHeight="30" fx:id="login"  />
+        <PasswordField promptText="Password" prefHeight="30" fx:id="password"/>
+        <Button text="Sing in"  prefWidth="200" prefHeight="30" lineSpacing="20" onAction="#entrance"  fx:id="enter"/>
 
     </VBox>
 

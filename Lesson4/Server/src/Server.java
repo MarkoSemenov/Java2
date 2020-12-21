@@ -8,11 +8,10 @@ import java.util.Scanner;
 
 public class Server {
 
-    private int SERVER_PORT;
-    private boolean isConnect = true;
+    private final int SERVER_PORT;
+    private volatile boolean isConnect = true;
     private final Scanner scanner = new Scanner(System.in);
     public static LinkedList<Connection> allConnections = new LinkedList<>();
-    public List<String> names = new ArrayList<>();
 
     public Server(int SERVER_PORT) {
         this.SERVER_PORT = SERVER_PORT;
@@ -40,17 +39,22 @@ public class Server {
         } catch (IOException e) {
             System.out.println("Соединение разорвано");
         }
+
     }
 
 
     public synchronized void addUsers(Connection o) throws IOException {
-//        allConnections.add(new Connection(socket, this));
         allConnections.add(o);
+        sendInfoAboutClients();
     }
 
     public synchronized void removeUsers(Connection o) {
         allConnections.remove(o);
-//        allConnections.removeIf(s -> !s.isConnectSocket());
+        try {
+            sendInfoAboutClients();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -60,9 +64,20 @@ public class Server {
         }
     }
 
+    public synchronized void sendInfoAboutClients () throws IOException {
+        StringBuilder sb = new StringBuilder("/clients ");
+
+        for (Connection c : allConnections) {
+            if (!allConnections.isEmpty()) {
+              sb.append(c.gtName() + " ");
+            }
+        }
+        broadcastMsg(sb.toString());
+    }
+
     public synchronized boolean isNickBusy(String nick) {
         for (Connection o : allConnections) {
-            if (o.getName().equals(nick)) {
+            if (o.gtName().equals(nick)) {
                 return true;
             }
         }
@@ -100,7 +115,7 @@ public class Server {
     }
 
     public void setAllConnections(LinkedList<Connection> allConnections) {
-        this.allConnections = allConnections;
+        Server.allConnections = allConnections;
     }
 
     public static void main(String[] args) {

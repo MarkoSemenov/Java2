@@ -28,8 +28,7 @@ class Connection extends Thread {
         if (!authorization) {
             authentication();
         }
-        server.names.add(name);
-        System.out.println("клиент авторизован");
+        System.out.println(name + " авторизован");
         start();
     }
 
@@ -56,7 +55,7 @@ class Connection extends Thread {
     }
 
 
-    public void authentication() throws IOException   {
+    public void authentication() {
 
         while (true) {
             try {
@@ -67,11 +66,15 @@ class Connection extends Thread {
                     for (User client : base) {
                         if ((client.getLogin().equals(s[1])) && (client.getPassword().equals(s[2]))) {
                             name = client.getNickName();
-                            sendMsg("Success" + " " + name);
-                            server.broadcastMsg(name + " зашел в чат ");
-                            server.addUsers(this);
-                            authorization = true;
-                            return;
+                            if (!server.isNickBusy(name)) {
+                                sendMsg("Success" + " " + name);
+                                server.broadcastMsg(name + " зашел в чат...");
+                                server.addUsers(this);
+                                authorization = true;
+                                return;
+                            } else {
+                            sendMsg("denied");
+                            }
                         } else outputStream.writeUTF("denied");
                     }
                 }
@@ -88,7 +91,7 @@ class Connection extends Thread {
 
     public void getMessage() throws IOException {
         String messageFromUser = inputStream.readUTF();
-        if (messageFromUser.startsWith("/w")){
+        if (messageFromUser.startsWith("/w")) {
             String[] str = messageFromUser.split(" ");
             String nick = str[1];
             String msg = messageFromUser.substring(4 + nick.length());
@@ -101,10 +104,10 @@ class Connection extends Thread {
     }
 
 
-    public void getMsg(DataInputStream inputStream) throws IOException {
-        String messageFromUser = inputStream.readUTF();
-        System.out.println(currentThread().getName() + ": " + messageFromUser);
-    }
+//    public void getMsg(DataInputStream inputStream) throws IOException {
+//        String messageFromUser = inputStream.readUTF();
+//        System.out.println(currentThread().getName() + ": " + messageFromUser);
+//    }
 
     public void sendMsg(String msgToUsers) throws IOException {
         if (isConnectSocket) {
@@ -143,7 +146,6 @@ class Connection extends Thread {
     public DataOutputStream getOutputStream() {
         return outputStream;
     }
-
 
 
 }

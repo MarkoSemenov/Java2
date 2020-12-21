@@ -5,18 +5,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Client  {
 
-    String name;
-    public List<String> nick = new ArrayList<>();
+    public List<String> nickName = new ArrayList<>();
     private DataInputStream inputMessage;
     private DataOutputStream outputMessage;
     private Socket socket;
     private final Controller controller;
     private boolean isConnect = true;
     public static boolean authorization = false;
+    public String nick;
 
 
     public Client(Controller controller) throws IOException {
@@ -24,12 +25,10 @@ public class Client  {
         this.controller = controller;
 
         try {
-
             socket = new Socket("localhost", 2022);
             outputMessage = new DataOutputStream(socket.getOutputStream());
             inputMessage = new DataInputStream(socket.getInputStream());
             connectServer();
-
 
         } catch (IOException e) {
             System.out.println("Сервер не доступен");
@@ -42,9 +41,12 @@ public class Client  {
         return this;
     }
 
+    public String getNick (){
+        return nick;
+    }
 
 
-    public synchronized void connectServer() throws IOException {
+    public void connectServer() throws IOException {
         System.out.println("Соединение установлено: " + socket.isConnected());
         Thread readThread = new Thread(() -> {
             while (true) {
@@ -52,6 +54,7 @@ public class Client  {
                     if (!authorization) {
                         authentication();
                     }
+
                     getMessage();
 
                 } catch (IOException e) {
@@ -64,29 +67,34 @@ public class Client  {
         readThread.start();
     }
 
-    public void getMessage() throws IOException {
+    public synchronized void getMessage() throws IOException {
         String getMsg = inputMessage.readUTF();
-        controller.chatTextArea.appendText(getMsg);
-
+        if (getMsg.startsWith("/clients ")){
+            String [] getNicksFromServer = getMsg.split(" ");
+                controller.list = FXCollections.observableArrayList(getNicksFromServer);
+                controller.list.remove(0);
+                controller.nickNames.setItems(controller.list);
+        } else {
+            controller.chatTextArea.appendText(getMsg);
+        }
     }
+
 
 
     public void sendMessage() throws IOException {
         if (isConnect) {
-
             String msgToServer = controller.sendTextField.getText();
             outputMessage.writeUTF(msgToServer);
             controller.sendTextField.clear();
         }
     }
 
-    public synchronized void authentication() throws IOException {
+    public void authentication() throws IOException {
 
         while (true) {
             String str = inputMessage.readUTF();
             if (str.startsWith("Success")) {
                 String [] client = str.split(" ");
-//                name = client[1];
                 NetChat.userList.add(client[1]);
                 controller.nickNames.setItems(FXCollections.observableArrayList(NetChat.userList));
                 authorization = true;
@@ -95,6 +103,9 @@ public class Client  {
             }
         }
     }
+
+
+
 
     public Socket getSocket() {
         return socket;
@@ -135,7 +146,7 @@ public class Client  {
     }
 
     public void setAuthorization(boolean authorization) {
-        this.authorization = authorization;
+        Client.authorization = authorization;
     }
 
 

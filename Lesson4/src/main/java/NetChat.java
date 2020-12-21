@@ -24,12 +24,11 @@ public class NetChat extends Application {
         authentication();
         showChat();
 
-        System.out.println(userList);
 
     }
 
     public static void startPrimary() {
-        
+
         primaryStage.show();
     }
 

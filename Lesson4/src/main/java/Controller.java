@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -31,14 +32,14 @@ public class Controller implements Initializable {
     @FXML
     private Button authButton;
 
+    public ObservableList<String> list;
     private boolean isConnect = true;
     private boolean isAuth = false;
     public static Client client;
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-            nickNames.setItems(FXCollections.observableArrayList(NetChat.userList));
+    public synchronized void initialize(URL location, ResourceBundle resources) {
         try {
             client = new Client(this);
         } catch (IOException e) {
@@ -47,6 +48,7 @@ public class Controller implements Initializable {
 
 
     }
+
 
     public void clickOnSendButton(ActionEvent actionEvent) {
         Thread t = new Thread(() -> {

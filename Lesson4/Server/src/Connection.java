@@ -48,7 +48,9 @@ class Connection extends Thread {
             } catch (IOException e) {
                 System.out.println(name + " разорвал соединение");
                 try {
-                    server.broadcastMsg(name + " вышел из чата");
+                    if (name != null) {
+                        server.broadcastMsg(name + " вышел из чата");
+                    }
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
@@ -78,7 +80,7 @@ class Connection extends Thread {
                 }
             }
         };
-        timer.schedule(timerTask, 5000);
+        timer.schedule(timerTask, 12000);
     }
 
     public void authentication() {

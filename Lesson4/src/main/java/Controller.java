@@ -1,6 +1,4 @@
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,15 +8,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.PickResult;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -31,7 +24,7 @@ public class Controller implements Initializable {
     @FXML
     public Button sendButton;
     @FXML
-    public ListView<String> nickNames = new ListView<>();
+    public ListView<String> nickNames;
     @FXML
     private Text userTextField;
     @FXML

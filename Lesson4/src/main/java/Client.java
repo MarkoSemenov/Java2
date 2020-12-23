@@ -1,5 +1,6 @@
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +15,6 @@ public class Client {
     private final Controller controller;
     private boolean isConnect = true;
     public volatile static boolean authorization = false;
-//    public static String nick;
     String[] getNicksFromServer;
 
 
@@ -49,6 +49,7 @@ public class Client {
                 } catch (IOException e) {
                     System.out.println("Соединение разорвано");
                     isConnect = false;
+                    Platform.exit();
                     return;
                 }
             }
@@ -62,7 +63,7 @@ public class Client {
         if (getMsg.startsWith("/clients ")) {
             getNicksFromServer = getMsg.split(" ");
             Platform.runLater(
-            new Thread(() -> controller.nickNames.setItems(FXCollections.observableArrayList
+                    new Thread(() -> controller.nickNames.setItems(FXCollections.observableArrayList
                             (Arrays.copyOfRange(getNicksFromServer, 1, getNicksFromServer.length)))));
         } else {
             controller.chatTextArea.appendText(getMsg);
@@ -70,7 +71,7 @@ public class Client {
 
     }
 
-    public void closeConnection () throws IOException {
+    public void closeConnection() throws IOException {
         if (socket.isConnected()) {
             outputMessage.close();
             inputMessage.close();
@@ -95,7 +96,7 @@ public class Client {
                 return;
             }
 
-            if (str.startsWith("forcedClose")){
+            if (str.startsWith("forcedClose")) {
                 closeConnection();
                 Platform.exit();
             }

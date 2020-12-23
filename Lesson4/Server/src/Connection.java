@@ -117,7 +117,7 @@ class Connection extends Thread {
     public void getMessage() throws IOException {
         String messageFromUser = inputStream.readUTF();
         if (messageFromUser.startsWith("/w")) {
-            String[] str = messageFromUser.split(" ");
+            String[] str = messageFromUser.split(" ", 3);
             String nick = str[1].substring(1, (str[1].length() - 1));
             String msg = str[2];
             server.sndPersonalMsg(this, nick, msg);

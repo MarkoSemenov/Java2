@@ -11,7 +11,6 @@ import java.io.IOException;
 public class NetChat extends Application {
 
     public static Stage primaryStage;
-    long time;
 
     @Override
     public void start(Stage primaryStage) throws Exception {

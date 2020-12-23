@@ -37,7 +37,6 @@ public class Controller implements Initializable {
     @FXML
     private Button authButton;
 
-//    public ObservableList<String> list;
     private boolean isConnect = true;
     private boolean isAuth = false;
     public static Client client;
@@ -58,7 +57,6 @@ public class Controller implements Initializable {
         Thread t = new Thread(() -> {
             try {
                 client.sendMessage();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,15 +1,10 @@
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.sql.Time;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.stream.Stream;
 
 public class Client {
 
@@ -19,7 +14,7 @@ public class Client {
     private final Controller controller;
     private boolean isConnect = true;
     public volatile static boolean authorization = false;
-    public static String nick;
+//    public static String nick;
     String[] getNicksFromServer;
 
 
